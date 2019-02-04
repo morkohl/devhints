@@ -1,17 +1,44 @@
 import json
 import webbrowser
 
-from bin.matcher import MatcherUtil
+from matcher import MatcherUtil
 
 
 class HintUtil:
-    #os.environ["HOME"] + "/local/share/devhints/hints.json"
+
     def __init__(self, json_file_path="../hints.json"):
         if ".json" in json_file_path:
             self.json_file_name = json_file_path
         else:
             print(f"{json_file_path} does not contain a JSON file.")
             exit(1)
+
+    def list_hints(self):
+        print("listing all k/v's\n")
+        data = self.read_json_from_file()
+        for kv in data:
+            print(kv, data.get(kv))
+
+    def remove_all_hints(self):
+        self.write_to_json({})
+
+    def remove_hint(self, hint_key):
+        data = self.read_json_from_file()
+        if data.get(hint_key):
+            print("Key is not set!")
+            exit(1)
+        data = list(filter(lambda key, value: key != hint_key, data))
+        self.write_to_json(data)
+        return data
+
+    def add_hint(self, hint_key, file_path):
+        data = self.read_json_from_file()
+        if data.get(hint_key):
+            print("Key already used. Remove it first to replace it!")
+            exit(1)
+        data[hint_key] = file_path
+        self.write_to_json(data)
+        return data
 
     def open_hint(self, hint_key):
         data = self.read_json_from_file()
@@ -39,6 +66,3 @@ class HintUtil:
         else:
             print(f"devhints file not set. use devhints. ")
         exit(1)
-
-
-    # else:
