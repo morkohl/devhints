@@ -1,12 +1,13 @@
 import json
+import os
 import webbrowser
 
 from matcher import MatcherUtil
 
 
 class HintUtil:
-
-    def __init__(self, json_file_path="../hints.json"):
+    #json_file_path=f'{os.environ["HOME"]}/.local/share/devhints/hints.json'
+    def __init__(self, json_file_path='../hints.json'):
         if ".json" in json_file_path:
             self.json_file_name = json_file_path
         else:
@@ -14,10 +15,13 @@ class HintUtil:
             exit(1)
 
     def list_hints(self):
-        print("listing all k/v's\n")
         data = self.read_json_from_file()
-        for kv in data:
-            print(kv, data.get(kv))
+        if len(data) > 0:
+            print('{0:<20} {1:>5}'.format('HINT', 'VALUE'))
+            for key in data:
+                print('{0:<20} {1:>5}'.format(key, data.get(key)))
+        else:
+            print(f'{self.json_file_name} has no hints!')
 
     def remove_all_hints(self):
         self.write_to_json({})
@@ -43,7 +47,7 @@ class HintUtil:
     def open_hint(self, hint_key):
         data = self.read_json_from_file()
         actual_hint = data[hint_key]
-        if MatcherUtil.is_hint_url(actual_hint):
+        if MatcherUtil.is_url(actual_hint):
             webbrowser.open_new(actual_hint)
         elif MatcherUtil.is_file_path(actual_hint):
             with open(actual_hint) as read_file:
@@ -58,11 +62,11 @@ class HintUtil:
 
     def read_json_from_file(self):
         if self.json_file_name:
-            with open(self.json_file_name, "r") as read_file:
-                try:
+            try:
+                with open(self.json_file_name, "r") as read_file:
                     return json.load(read_file)
-                except IOError:
-                    print(f"devhints file does not exist")
+            except IOError:
+                print(f"file {self.json_file_name} does not exist")
         else:
             print(f"devhints file not set. use devhints. ")
         exit(1)
