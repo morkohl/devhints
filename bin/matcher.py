@@ -4,12 +4,12 @@ import re as regex
 class MatcherUtil:
     url_regex = regex.compile(r"^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$",
                               regex.IGNORECASE)
-    file_path_regex = regex.compile(r"^(/[^/ ]*)+/?$")
+    file_path_regex = regex.compile(r"^((\.{1,2})?\/[^\/ ]*)+?$")
 
     @staticmethod
-    def is_file_path(actual_hint):
+    def is_filwe_path(actual_hint):
         return regex.match(MatcherUtil.file_path_regex, actual_hint)
 
     @staticmethod
-    def is_hint_url(actual_hint):
+    def is_url(actual_hint):
         return regex.match(MatcherUtil.url_regex, actual_hint)
