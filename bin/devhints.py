@@ -1,7 +1,7 @@
 import os
 import sys
 
-from arguments import ActionInvoker
+from commands import CommandInvoker
 
 
 def remove_own_filename_if_present(args):
@@ -12,4 +12,4 @@ def remove_own_filename_if_present(args):
 
 if __name__ == "__main__":
     args = remove_own_filename_if_present(sys.argv)
-    ActionInvoker(args).execute_action()
+    CommandInvoker(args).execute_action()
