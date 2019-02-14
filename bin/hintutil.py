@@ -1,18 +1,12 @@
 import json
-import os
 import webbrowser
 
 from matcher import MatcherUtil
 
 
 class HintUtil:
-    #json_file_path=f'{os.environ["HOME"]}/.local/share/devhints/hints.json'
-    def __init__(self, json_file_path='../hints.json'):
-        if ".json" in json_file_path:
-            self.json_file_name = json_file_path
-        else:
-            print(f"{json_file_path} does not contain a JSON file.")
-            exit(1)
+    def __init__(self, json_file_path):
+        self.json_file_name = json_file_path
 
     def list_hints(self):
         data = self.read_json_from_file()
@@ -28,7 +22,7 @@ class HintUtil:
 
     def remove_hint(self, hint_key):
         data = self.read_json_from_file()
-        if data.get(hint_key):
+        if not data.get(hint_key):
             print("Key is not set!")
             exit(1)
         data = list(filter(lambda key, value: key != hint_key, data))
@@ -46,7 +40,12 @@ class HintUtil:
 
     def open_hint(self, hint_key):
         data = self.read_json_from_file()
-        actual_hint = data[hint_key]
+        try:
+            actual_hint = data[hint_key]
+        except KeyError:
+            print("Key does not exist")
+            exit(1)
+
         if MatcherUtil.is_url(actual_hint):
             webbrowser.open_new(actual_hint)
         elif MatcherUtil.is_file_path(actual_hint):
@@ -56,17 +55,17 @@ class HintUtil:
             print(actual_hint)
 
     def write_to_json(self, data):
-        if self.json_file_name:
+        try:
             with open(self.json_file_name, "w") as write_file:
                 json.dump(data, write_file)
+        except IOError as err:
+            print(f"Encountered error when reading from file {self.json_file_name}; {err}")
+            exit(1)
 
     def read_json_from_file(self):
-        if self.json_file_name:
-            try:
-                with open(self.json_file_name, "r") as read_file:
-                    return json.load(read_file)
-            except IOError:
-                print(f"file {self.json_file_name} does not exist")
-        else:
-            print(f"devhints file not set. use devhints. ")
-        exit(1)
+        try:
+            with open(self.json_file_name, "r") as read_file:
+                return json.load(read_file)
+        except Exception as err:
+            print(f"Encountered error when reading from file {self.json_file_name}; {err}")
+            exit(1)
