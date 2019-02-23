@@ -1,4 +1,6 @@
-*.json
 .idea
 *.iml
+
+*.json
+
 __pycache__
