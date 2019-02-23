@@ -10,6 +10,9 @@ class CommandInvoker:
     def __init__(self, args):
         parser = CommandInvoker.init_args()
 
+        if len(args) == 0:
+            parser.print_help()
+
         self.parsed_args = parser.parse_args(args)
 
         self.hint_file = os.environ["HOME"] + "/.devhints/data/hints.json"
