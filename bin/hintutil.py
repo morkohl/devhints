@@ -25,7 +25,7 @@ class HintUtil:
         if not data.get(hint_key):
             print("Key is not set!")
             exit(1)
-        data = list(filter(lambda key, value: key != hint_key, data))
+        data = list(filter(lambda key: key != hint_key, data))
         self.write_to_json(data)
         return data
 
