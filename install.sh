@@ -15,25 +15,29 @@ install_program () {
     echo "Installation finished. To execute devhints from anywhere add ${INSTALL_PATH/bin} to your path in your .bashrc"
 }
 
-reinstall_program() {
-    echo "Directory already exists. Reinstalling..."
-
-    TMP_HINT_FILE=/tmp/${PROGRAM_NAME}_hint_file.json
-
-    cat ${HINT_FILE} > ${TMP_HINT_FILE}
-
-    rm -rf ${INSTALL_PATH}
-
-    install_program
-
-    cat ${TMP_HINT_FILE} > ${HINT_FILE}
-}
-
-
-
 if [[ -d ${INSTALL_PATH} ]]
 then
-    reinstall_program
+    echo "Directory already exists. Reinstalling..."
+
+    if [[ "$1" == "--preserve-hint-file" ]] || [[ "$1" == "-p" ]]
+    then
+        TMP_HINT_FILE=/tmp/${PROGRAM_NAME}_hint_file.json
+
+        echo "Preserved hint file is ${TMP_HINT_FILE}"
+
+        cat ${HINT_FILE} > ${TMP_HINT_FILE}
+
+        rm -rf ${INSTALL_PATH}
+
+        install_program
+
+        cat ${TMP_HINT_FILE} > ${HINT_FILE}
+    else
+        rm -rf ${INSTALL_PATH}
+
+        install_program
+    fi
+
 else
     install_program
 fi
