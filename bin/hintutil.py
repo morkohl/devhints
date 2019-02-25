@@ -8,6 +8,21 @@ class HintUtil:
     def __init__(self, json_file_path):
         self.json_file_name = json_file_path
 
+    def search(self, search_string, collection):
+        if len(collection) == 0:
+            print(f"There are no entries to search.")
+            exit(0)
+        results = list(filter(lambda item: item in search_string or search_string in item, collection))
+        print(f"Found {len(results)} results:")
+        for item in results:
+            print(item)
+
+    def search_keys(self, search_string):
+        self.search(search_string, self.read_json_from_file())
+
+    def search_values(self, search_string):
+        self.search(search_string, [value for key, value in self.read_json_from_file().items()])
+
     def list_hints(self):
         data = self.read_json_from_file()
         if len(data) > 0:
@@ -17,9 +32,6 @@ class HintUtil:
         else:
             print(f'{self.json_file_name} has no hints!')
 
-    def remove_all_hints(self):
-        self.write_to_json({})
-
     def remove_hint(self, hint_key):
         data = self.read_json_from_file()
         if not data.get(hint_key):
@@ -28,6 +40,9 @@ class HintUtil:
         del data[hint_key]
         self.write_to_json(data)
         return data
+
+    def remove_all_hints(self):
+        self.write_to_json({})
 
     def add_hint(self, hint_key, file_path):
         data = self.read_json_from_file()

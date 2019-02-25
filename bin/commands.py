@@ -36,6 +36,8 @@ class CommandInvoker:
         parser.add_argument("--remove-all", dest="remove_all", action="store_true", help="remove all hints")
         parser.add_argument("-l", "--list", dest="list", action="store_true", help="list all hints and their values")
         parser.add_argument("-f", "--file", dest="alternate_file", help="give an alternate file for any action")
+        parser.add_argument("-s", "--search", dest="search", help="search for keys")
+        parser.add_argument("-sv", "--search-value", dest="search_value", help="search for values")
         parser.add_argument("hint", nargs="?")
 
         return parser
@@ -53,3 +55,7 @@ class CommandInvoker:
             self.hint_util.remove_hint(args.remove)
         elif args.remove_all:
             self.hint_util.remove_all_hints()
+        elif args.search:
+            self.hint_util.search_keys(args.search)
+        elif args.search_value:
+            self.hint_util.search_values(args.search_value)
